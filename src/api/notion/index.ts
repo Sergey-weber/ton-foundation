@@ -8,24 +8,35 @@ type TableRows = {
     };
 }
 
-export const fetchBlockContent = async () => {
+export const fetchBlockContent = async (startCursor?: string) => {
     try {
-        const response = await fetch(`https://api.notion.com/v1/blocks/${notionConfig.blockId}/children?page_size=6`, {
+        const start_cursor = `&start_cursor=${startCursor}`
+        const url = `https://api.notion.com/v1/blocks/${notionConfig.blockId}/children?page_size=6${startCursor ? start_cursor : ''}`
+        console.log('urlgds: ', url, 'notionConfig.blockIdsad: ', notionConfig.blockId)
+        const response = await fetch(url, {
             method: 'get',
             headers: new Headers({
-                'Authorization': `Bearer ${notionConfig.apiKey}`,
+                'Authorization': `Bearer ${notionConfig.apiKey} `,
                 'Notion-Version': notionConfig.versionApi
             }),
         })
 
-        const { results } = await response.json()
+        const { results, next_cursor } = await response.json()
 
+        console.log('next_cursorsad: ', next_cursor)
         const plainTexts = results.map((res: TableRows) => {
             return res.table_row.cells[0][0].plain_text
         });
 
-        return plainTexts;
+        return {
+            plainTexts,
+            nextPageToken: next_cursor
+        };
     } catch (e) {
         console.log('Error: ', e)
+
+        return {
+            plainTexts: [],
+        };
     }
 }

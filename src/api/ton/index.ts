@@ -1,13 +1,3 @@
-export type NftItem = {
-    length: any;
-    friendlyAddress: string;
-    rawAddress: string;
-    ownerAddress: string;
-    img: string;
-    name: string;
-    description: string;
-}
-
 export const fetchNft = async (address: string) => {
     try {
         const response = await fetch(`https://tonapi.io/v2/nfts/${address}`)

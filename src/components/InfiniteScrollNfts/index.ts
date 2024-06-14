@@ -1,1 +1,1 @@
-export * from './InfiniteScrollNfts'
+export * from './InfiniteScrollNfts';
