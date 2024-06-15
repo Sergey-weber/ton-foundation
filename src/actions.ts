@@ -1,5 +1,6 @@
 "use server"
 
+
 import { fetchBlockContent, fetchNft } from "./api";
 
 export const fetchNftItems = async (startCursor?: string) => {
@@ -8,7 +9,7 @@ export const fetchNftItems = async (startCursor?: string) => {
     const nftAdresses = plainTexts.slice(1, plainTexts.length);
 
     const nftList = await Promise.all(nftAdresses.map((address: string) => fetchNft(address)))
-    console.log('nextPageTokenasd: ', nextPageToken)
+
     return {
         nftList,
         nextPageToken

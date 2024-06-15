@@ -15,13 +15,13 @@ type NftItem = {
     description: string;
 }
 
-type InfiniteScrollNftsProps = {
-    initialNfts: NftItem[];
+export type NftsProps = {
+    nftList: NftItem[];
     nextPageToken?: string;
 }
 
-export const InfiniteScrollNfts = ({ initialNfts, nextPageToken }: InfiniteScrollNftsProps) => {
-    const [nfts, setNfts] = useState(initialNfts)
+export const InfiniteScrollNfts = ({ nftList, nextPageToken }: NftsProps) => {
+    const [nfts, setNfts] = useState(nftList)
     const [startCursor, setStartCursor] = useState(nextPageToken)
     const [ref, inView] = useInView()
 
@@ -43,17 +43,17 @@ export const InfiniteScrollNfts = ({ initialNfts, nextPageToken }: InfiniteScrol
         if (inView && startCursor) {
             loadMoreNfts()
         }
-    }, [inView])
+    }, [inView, loadMoreNfts])
 
     return (
         <>
             <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-3 lg:text-left">
                 {
                     nfts?.map((nft, i) => {
-                        return <div
+                        return nft && <div
                             key={nft.friendlyAddress + i}
                             className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-                            <div className='break-all'>friendlyAddress: {nft.friendlyAddress}</div>
+                            <div className='break-all'><div className='font-semibold'>friendlyAddress</div>: {nft.friendlyAddress}</div>
                             <div className='break-all'>rawAddress: {nft.rawAddress}</div>
                             <div className='break-all'>ownerAddress: {nft.ownerAddress}</div>
                             <div><Image

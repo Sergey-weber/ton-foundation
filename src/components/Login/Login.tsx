@@ -17,7 +17,7 @@ export const Login = () => {
         if (connected) {
             router.push('/')
         }
-    }, [connected])
+    }, [connected, router])
 
     return (
         <TonConnectButton />
