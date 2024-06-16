@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useInView } from 'react-intersection-observer'
 import { fetchNftItems } from '@/actions'
@@ -25,7 +25,7 @@ export const InfiniteScrollNfts = ({ nftList, nextPageToken }: NftsProps) => {
     const [startCursor, setStartCursor] = useState(nextPageToken)
     const [ref, inView] = useInView()
 
-    async function loadMoreNfts() {
+    const loadMoreNfts = useCallback(async () => {
         const { nftList, nextPageToken } = await fetchNftItems(startCursor)
 
         if (nftList?.length) {
@@ -36,9 +36,8 @@ export const InfiniteScrollNfts = ({ nftList, nextPageToken }: NftsProps) => {
                 ...nftList
             ])
         }
-    }
+    }, [])
 
-    // TODO: wrap loadMoreNfts in useCallback and pass it to the dep array
     useEffect(() => {
         if (inView && startCursor) {
             loadMoreNfts()
@@ -47,23 +46,23 @@ export const InfiniteScrollNfts = ({ nftList, nextPageToken }: NftsProps) => {
 
     return (
         <>
-            <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-3 lg:text-left">
+            <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-2 lg:text-left">
                 {
                     nfts?.map((nft, i) => {
                         return nft && <div
                             key={nft.friendlyAddress + i}
                             className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-                            <div className='break-all'><div className='font-semibold'>friendlyAddress</div>: {nft.friendlyAddress}</div>
-                            <div className='break-all'>rawAddress: {nft.rawAddress}</div>
-                            <div className='break-all'>ownerAddress: {nft.ownerAddress}</div>
+                            <div className='break-all'><p className='font-semibold'>friendlyAddress:</p> {nft.friendlyAddress}</div>
+                            <div className='break-all'><p className='font-semibold'>frawAddress:</p> {nft.rawAddress}</div>
+                            <div className='break-all'><p className='font-semibold'>ownerAddress:</p> {nft.ownerAddress}</div>
                             <div><Image
                                 src={nft.img}
                                 width={100}
                                 height={100}
                                 alt="Picture of the author"
                             /></div>
-                            <div>name: {nft.name}</div>
-                            <div>description: {nft.description}</div>
+                            <div><p className='font-semibold'>name:</p> {nft.name}</div>
+                            <div><p className='font-semibold'>description:</p> {nft.description}</div>
                         </div>
                     })
                 }

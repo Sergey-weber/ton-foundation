@@ -6,7 +6,7 @@ export const fetchNft = async (address: string) => {
 
         return {
             friendlyAddress: address,
-            rawAddress: result.address,
+            rawAddress: result?.address,
             ownerAddress: result.owner.address,
             img: result.previews.find((preview: { resolution: string; }) => preview.resolution === '100x100').url,
             name: result.metadata.name,
