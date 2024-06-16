@@ -1,6 +1,5 @@
 "use server"
 
-
 import { fetchBlockContent, fetchNft } from "./api";
 
 export const fetchNftItems = async (startCursor?: string) => {

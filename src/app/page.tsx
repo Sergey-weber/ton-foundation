@@ -1,6 +1,5 @@
-import { InfiniteScrollNfts } from "@/components";
 import { fetchNftItems } from "@/actions";
-
+import { NftsList } from "@/components/NftsList/NftsList";
 
 export const revalidate = 10;
 
@@ -9,7 +8,7 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <InfiniteScrollNfts nftList={nftList} nextPageToken={nextPageToken} />
+      <NftsList nftList={nftList} nextPageToken={nextPageToken} />
     </main>
   );
 }

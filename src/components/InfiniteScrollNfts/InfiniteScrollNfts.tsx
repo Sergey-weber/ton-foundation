@@ -1,5 +1,4 @@
 'use client'
-
 import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useInView } from 'react-intersection-observer'
@@ -36,7 +35,7 @@ export const InfiniteScrollNfts = ({ nftList, nextPageToken }: NftsProps) => {
                 ...nftList
             ])
         }
-    }, [])
+    }, [startCursor])
 
     useEffect(() => {
         if (inView && startCursor) {
