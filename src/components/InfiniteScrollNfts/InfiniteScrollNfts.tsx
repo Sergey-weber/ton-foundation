@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useInView } from 'react-intersection-observer'
 import { fetchNftItems } from '@/actions'
@@ -21,24 +21,34 @@ export type NftsProps = {
 
 export const InfiniteScrollNfts = ({ nftList, nextPageToken }: NftsProps) => {
     const [nfts, setNfts] = useState(nftList)
-    const [startCursor, setStartCursor] = useState(nextPageToken)
     const [ref, inView] = useInView()
+    const loading = useRef(false);
+    const lastitem = useRef(false);
+    const startCursor = useRef(nextPageToken);
 
     const loadMoreNfts = useCallback(async () => {
-        const { nftList, nextPageToken } = await fetchNftItems(startCursor)
+        if (loading.current || lastitem.current || !startCursor.current) return;
+
+        loading.current = true;
+
+        const { nftList, nextPageToken } = await fetchNftItems({ startCursor: startCursor.current })
+
+        loading.current = false;
+
+        startCursor.current = nextPageToken
 
         if (nftList?.length) {
-            setStartCursor(nextPageToken)
-
             setNfts((prev: NftItem[]) => [
                 ...(prev?.length ? prev : []),
                 ...nftList
             ])
+        } else {
+            lastitem.current = true;
         }
-    }, [startCursor])
+    }, [startCursor, fetchNftItems])
 
     useEffect(() => {
-        if (inView && startCursor) {
+        if (inView) {
             loadMoreNfts()
         }
     }, [inView, loadMoreNfts])
@@ -51,24 +61,24 @@ export const InfiniteScrollNfts = ({ nftList, nextPageToken }: NftsProps) => {
                         return nft && <div
                             key={nft.friendlyAddress + i}
                             className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-                            <div className='break-all'><p className='font-semibold'>friendlyAddress:</p> {nft.friendlyAddress}</div>
-                            <div className='break-all'><p className='font-semibold'>frawAddress:</p> {nft.rawAddress}</div>
-                            <div className='break-all'><p className='font-semibold'>ownerAddress:</p> {nft.ownerAddress}</div>
+                            <div className='break-all'><span className='font-semibold'>friendlyAddress:</span> {nft.friendlyAddress}</div>
+                            <div className='break-all'><span className='font-semibold'>frawAddress:</span> {nft.rawAddress}</div>
+                            <div className='break-all'><span className='font-semibold'>ownerAddress:</span> {nft.ownerAddress}</div>
                             <div><Image
                                 src={nft.img}
                                 width={100}
                                 height={100}
                                 alt="Picture of the author"
                             /></div>
-                            <div><p className='font-semibold'>name:</p> {nft.name}</div>
-                            <div><p className='font-semibold'>description:</p> {nft.description}</div>
+                            <div><span className='font-semibold'>name:</span> {nft.name}</div>
+                            <div><span className='font-semibold'>description:</span> {nft.description}</div>
                         </div>
                     })
                 }
             </div >
 
             {
-                startCursor && <div
+                startCursor.current && <div
                     ref={ref}
                     className='col-span-1 mt-16 flex items-center justify-center sm:col-span-2 md:col-span-3 lg:col-span-4'
                 >

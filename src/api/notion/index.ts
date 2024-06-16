@@ -11,7 +11,7 @@ type TableRows = {
 export const fetchBlockContent = async (startCursor?: string) => {
     try {
         const start_cursor = `&start_cursor=${startCursor}`
-        const url = `https://api.notion.com/v1/blocks/${notionConfig.blockId}/children?page_size=6${startCursor ? start_cursor : ''}`
+        const url = `https://api.notion.com/v1/blocks/${notionConfig.blockId}/children?page_size=${notionConfig.pageSize}${startCursor ? start_cursor : ''}`
 
         const response = await fetch(url, {
             method: 'get',

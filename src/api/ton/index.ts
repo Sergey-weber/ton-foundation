@@ -4,11 +4,13 @@ export const fetchNft = async (address: string) => {
 
         const result = await response.json()
 
+        const img = result.previews.find((preview: { resolution: string; }) => preview.resolution === '100x100').url || result.metadata.image
+
         return {
             friendlyAddress: address,
             rawAddress: result?.address,
             ownerAddress: result.owner.address,
-            img: result.previews.find((preview: { resolution: string; }) => preview.resolution === '100x100').url,
+            img,
             name: result.metadata.name,
             description: result.metadata.description,
         };
