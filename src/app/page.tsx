@@ -3,7 +3,6 @@ import { NftsList } from "@/components/NftsList/NftsList";
 
 import "./globals.css";
 
-
 export const revalidate = 20;
 
 export default async function Home() {

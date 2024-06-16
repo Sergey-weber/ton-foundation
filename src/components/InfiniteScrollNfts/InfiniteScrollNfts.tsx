@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useInView } from 'react-intersection-observer'
 import { fetchNftItems } from '@/actions'
+import { useTonConnect } from '@/hooks'
+import { useRouter } from 'next/navigation'
 
 
 type NftItem = {
@@ -25,6 +27,11 @@ export const InfiniteScrollNfts = ({ nftList, nextPageToken }: NftsProps) => {
     const loading = useRef(false);
     const lastitem = useRef(false);
     const startCursor = useRef(nextPageToken);
+
+    const { connected } = useTonConnect();
+    const router = useRouter();
+
+    if (!connected) router.push('/login')
 
     const loadMoreNfts = useCallback(async () => {
         if (loading.current || lastitem.current || !startCursor.current) return;
@@ -57,7 +64,7 @@ export const InfiniteScrollNfts = ({ nftList, nextPageToken }: NftsProps) => {
         <>
             <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-2 lg:text-left">
                 {
-                    nfts?.map((nft, i) => {
+                    connected && nfts?.map((nft, i) => {
                         return nft && <div
                             key={nft.friendlyAddress + i}
                             className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
