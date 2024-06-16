@@ -3,7 +3,7 @@ import { NftsList } from "@/components/NftsList/NftsList";
 
 import "./globals.css";
 
-export const revalidate = 20;
+export const revalidate = 600;
 
 export default async function Home() {
   const { nftList, nextPageToken } = await fetchNftItems({ initialCall: true })
