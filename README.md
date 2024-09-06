@@ -1,4 +1,4 @@
-Ton Foundation
+Ton App
 
 ## Getting Started
 
